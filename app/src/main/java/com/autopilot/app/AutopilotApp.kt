@@ -152,6 +152,11 @@ fun AutopilotApp(storage: SecureStorage) {
                                 storage.setAdFreeOverride(it)
                                 refreshUser()
                             },
+                            onSetAdFreeForUid = { uid, enabled ->
+                                val updated = storage.setAdFreeForUid(uid, enabled)
+                                if (updated) refreshUser()
+                                updated
+                            },
                         )
                     }
                 }
@@ -211,7 +216,7 @@ private fun HomeScreen(
     fun completeRewardSession() {
         val result = storage.completeRewardSession(networkTime.currentTimeMillis())
         if (!result.completed) {
-            message = "Please keep the ad open for a few seconds, then return and confirm."
+            message = "Please keep the ad open for at least 25 seconds, then return and confirm."
         } else if (result.rewarded) {
             message = "Reward complete. One day of access has been added."
         } else {
@@ -441,7 +446,7 @@ private fun RewardCard(
             Text("Ads completed: ${user.rewardAdsCompleted} / 10", color = Color(0xFF55D6BE))
             Text(
                 if (rewardReturned) "Returned from the ad? Confirm the session to count it."
-                else "Complete ten voluntary ad-view sessions to add one day.",
+                else "Keep the ad open for 25 seconds. Complete ten voluntary sessions to add one day.",
                 color = Color(0xFF9CB4C8),
             )
             if (rewardReturned) {

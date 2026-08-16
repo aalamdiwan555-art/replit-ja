@@ -20,6 +20,9 @@ data class User(
     val rewardSessionStartedAt: Long = 0L,
     val timeValidated: Boolean = false,
 ) {
+    val uid: String
+        get() = id
+
     val hasActiveAccess: Boolean
         get() = timeValidated && status in setOf(UserStatus.TRIAL, UserStatus.APPROVED, UserStatus.LIFETIME)
 

@@ -3,6 +3,8 @@ package com.autopilot.app
 import android.content.Context
 import android.os.SystemClock
 import kotlin.math.max
+import java.util.Locale
+import java.util.UUID
 
 class SecureStorage(context: Context) {
     private val preferences =
@@ -12,9 +14,12 @@ class SecureStorage(context: Context) {
         if (!preferences.contains(KEY_STATUS)) {
             preferences.edit()
                 .putString(KEY_STATUS, UserStatus.TRIAL.name)
+                .putString(KEY_ID, generateUid())
                 .putLong(KEY_TRIAL_STARTED_ELAPSED, SystemClock.elapsedRealtime())
                 .putInt(KEY_REWARD_COUNT, 0)
                 .apply()
+        } else if (!preferences.contains(KEY_ID)) {
+            preferences.edit().putString(KEY_ID, generateUid()).apply()
         }
     }
 
@@ -127,6 +132,14 @@ class SecureStorage(context: Context) {
         preferences.edit().putBoolean(KEY_AD_FREE, enabled).apply()
     }
 
+    fun setAdFreeForUid(uid: String, enabled: Boolean): Boolean {
+        val normalized = uid.trim().uppercase(Locale.US)
+        val currentUid = preferences.getString(KEY_ID, "")?.uppercase(Locale.US)
+        if (normalized.isBlank() || normalized != currentUid) return false
+        setAdFreeOverride(enabled)
+        return true
+    }
+
     fun reject() {
         saveUser(UserStatus.REJECTED, 0L)
     }
@@ -185,8 +198,11 @@ class SecureStorage(context: Context) {
         const val KEY_TRIAL_STARTED_NETWORK = "trial_started_network"
         const val KEY_TRIAL_STARTED_ELAPSED = "trial_started_elapsed"
         const val TRIAL_MILLIS = 60L * 60L * 1000L
-        const val MIN_REWARD_SESSION_MILLIS = 5_000L
+        const val MIN_REWARD_SESSION_MILLIS = 25_000L
         const val REWARD_TARGET = 10
         const val DAY_MILLIS = 24L * 60L * 60L * 1000L
+
+        fun generateUid(): String =
+            "AP-" + UUID.randomUUID().toString().replace("-", "").take(12).uppercase(Locale.US)
     }
 }

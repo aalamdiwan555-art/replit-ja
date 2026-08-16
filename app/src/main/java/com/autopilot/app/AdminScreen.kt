@@ -38,8 +38,11 @@ fun AdminScreen(
     onExtend: () -> Unit,
     onReject: () -> Unit,
     onToggleAdFree: (Boolean) -> Unit,
+    onSetAdFreeForUid: (String, Boolean) -> Boolean,
 ) {
     var customDays by rememberSaveable { mutableStateOf("7") }
+    var uidInput by rememberSaveable { mutableStateOf(user.uid) }
+    var uidMessage by rememberSaveable { mutableStateOf<String?>(null) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -60,6 +63,40 @@ fun AdminScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            Text("User Management")
+            Text("UID: ${user.uid}")
+            Text("This build stores one local user per device. A shared server is required to list users across devices.")
+            OutlinedTextField(
+                value = uidInput,
+                onValueChange = { uidInput = it.uppercase().take(32) },
+                label = { Text("User UID") },
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Button(
+                onClick = {
+                    uidMessage = if (onSetAdFreeForUid(uidInput, true)) {
+                        "AD-FREE MODE enabled for $uidInput"
+                    } else {
+                        "UID not found in this local registry."
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Make UID AD-FREE")
+            }
+            OutlinedButton(
+                onClick = {
+                    uidMessage = if (onSetAdFreeForUid(uidInput, false)) {
+                        "AD-FREE MODE disabled for $uidInput"
+                    } else {
+                        "UID not found in this local registry."
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Remove AD-FREE from UID")
+            }
+            uidMessage?.let { Text(it) }
             Text("Manage local approval for ${user.email}")
             Text("Current status: ${user.status}")
             Row(
