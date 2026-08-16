@@ -28,4 +28,7 @@ data class User(
 
     val shouldShowAds: Boolean
         get() = hasActiveAccess && !adFreeOverride && status != UserStatus.LIFETIME
+
+    val shouldShowOverlayAd: Boolean
+        get() = shouldShowAds && status != UserStatus.TRIAL
 }

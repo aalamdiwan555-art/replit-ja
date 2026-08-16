@@ -22,8 +22,10 @@ class ClickEngine {
         try {
             state.set(ClickState.CLICKING)
             points.forEach { point ->
-                click(point.humanized())
+                // Keep the delay immediately before dispatch so detection feels
+                // instant while the input still has a small humanized variance.
                 delay(Random.nextInt(1, 51).toLong())
+                click(point.humanized())
             }
         } finally {
             state.set(ClickState.COOLDOWN)
