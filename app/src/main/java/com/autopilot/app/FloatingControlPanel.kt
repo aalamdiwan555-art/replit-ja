@@ -58,7 +58,7 @@ class FloatingControlPanel(private val context: Context) {
         listOf(
             Triple(android.R.drawable.ic_media_play, Color.rgb(85, 214, 190), PanelAction.START),
             Triple(android.R.drawable.ic_media_pause, Color.rgb(255, 206, 106), PanelAction.PAUSE),
-            Triple(android.R.drawable.ic_media_stop, Color.rgb(255, 125, 138), PanelAction.STOP),
+            Triple(android.R.drawable.ic_menu_close_clear_cancel, Color.rgb(255, 125, 138), PanelAction.STOP),
         ).forEach { (icon, tint, action) ->
             container.addView(ImageButton(context).apply {
                 setImageResource(icon)
