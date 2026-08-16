@@ -5,6 +5,12 @@ dist
 tmp
 out-tsc
 *.tsbuildinfo
+build/
+.gradle/
+app/build/
+local.properties
+*.apk
+*.aab
 .expo
 .expo-shared
 

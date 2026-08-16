@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AUTOPILOT</string>
+    <string name="notification_channel_name">AUTOPILOT capture</string>
+    <string name="notification_channel_description">Screen capture for AUTOPILOT automation</string>
+</resources>

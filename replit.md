@@ -1,6 +1,6 @@
-# [Project name]
+# AUTOPILOT
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+An Android screen-automation app with network-synced access control, a first-launch ad-free trial, compact floating controls, and admin-managed entitlements.
 
 ## Run & Operate
 
@@ -22,15 +22,25 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `app/src/main/java/com/autopilot/app/NetworkTimeProvider.kt` — network Date-header sync with monotonic uptime fallback.
+- `app/src/main/java/com/autopilot/app/SecureStorage.kt` — local entitlement, trial, reward-session, and admin override state.
+- `app/src/main/java/com/autopilot/app/AutopilotApp.kt` — Compose dashboard, controls, reward flow, expiry lock, and secret admin entry.
+- `app/src/main/java/com/autopilot/app/ScreenCaptureService.kt` — MediaProjection lifecycle and periodic hard-expiry enforcement.
+- `app/src/main/java/com/autopilot/app/FloatingControlPanel.kt` — compact icon-only overlay controls.
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Entitlement calculations use a network-derived clock anchored to `SystemClock.elapsedRealtime()`; the device wall clock is never used for access decisions.
+- If a subscription cannot be validated after a reboot, controls fail closed until network time is available.
+- Reward sessions are user-initiated and return-confirmed; the app does not automate or click ads.
+- Lifetime access and admin ad-free mode are separate flags so an administrator can remove ads without changing expiry semantics.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Grants every new install a one-hour ad-free trial.
+- Shows a live trial/subscription countdown and locks controls when access expires.
+- Adds voluntary ad-view sessions that grant one extra day after ten completed sessions.
+- Provides an icon-only floating capture control panel and hidden multi-tap admin controls.
 
 ## User preferences
 
@@ -38,7 +48,8 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- The Android SDK must be configured for `./gradlew :app:assembleDebug`; the current development environment does not provide a writable SDK location.
+- `GITHUB_PERSONAL_ACCESS_TOKEN` is used only through an ephemeral Git HTTP header when pushing; it is not stored in repository config.
 
 ## Pointers
 

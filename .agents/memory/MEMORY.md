@@ -1,0 +1,1 @@
+- [Android build environment](android-build-environment.md) — Android Gradle builds require a writable SDK path; the provided sdkmanager is pinned to a read-only system location.
